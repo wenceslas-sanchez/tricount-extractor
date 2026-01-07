@@ -1,8 +1,6 @@
 name: Run Tests
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+on: [pull_request, workflow_dispatch]
 
 jobs:
   test:
