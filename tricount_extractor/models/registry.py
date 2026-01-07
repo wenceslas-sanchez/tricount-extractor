@@ -1,4 +1,4 @@
-from dataclasses import  dataclass
+from dataclasses import dataclass
 import datetime
 import pandas as pd
 import json
@@ -32,7 +32,7 @@ class Registry:
             updated=datetime.datetime.fromisoformat(data["updated"]),
             members=[Member.from_json(m) for m in data["memberships"]],
             entries=[Entry.from_json(e) for e in data.get("all_registry_entry", [])],
-            pagination=Pagination.from_json(data["Pagination"])
+            pagination=Pagination.from_json(data["Pagination"]),
         )
 
     @classmethod
@@ -45,7 +45,7 @@ class Registry:
             "members": self._to_members_dataframe(),
             "entries": self._to_entries_dataframe(),
             "allocations": self._to_allocations_dataframe(),
-            "balances": self._to_balance_dataframe()
+            "balances": self._to_balance_dataframe(),
         }
 
     def _to_entries_dataframe(self) -> pd.DataFrame:
@@ -63,7 +63,11 @@ class Registry:
             for a in e.allocations:
                 balances[a.member_name] -= abs(a.amount.value)
         rows = [{"member": k, "balance": round(v, 2)} for k, v in balances.items()]
-        return pd.DataFrame(rows).sort_values("balance", ascending=False).reset_index(drop=True)
+        return (
+            pd.DataFrame(rows)
+            .sort_values("balance", ascending=False)
+            .reset_index(drop=True)
+        )
 
     def _to_members_dataframe(self) -> pd.DataFrame:
         return pd.DataFrame([m.to_dict() for m in self.members])
