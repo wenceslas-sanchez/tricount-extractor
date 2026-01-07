@@ -12,7 +12,9 @@ USER_AGENT = "com.bunq.tricount.android:RELEASE:7.0.7:3174:ANDROID:13:C"
 
 
 class TricountClient:
-    def __init__(self):
+    def __init__(self, *, transport: httpx.BaseTransport | None = None):
+        self._transport = transport
+
         self._application_id = self._generate_application_id()
 
         self._access_token: AccessToken | None = None
@@ -26,7 +28,7 @@ class TricountClient:
         return None
 
     def get_registry(self, public_identifier_token: str) -> httpx.Response:
-        with httpx.Client() as client:
+        with httpx.Client(transport=self._transport) as client:
             response = client.get(
                 self._registry_url,
                 params=self._registry_params(public_identifier_token),
@@ -47,7 +49,7 @@ class TricountClient:
         return {"public_identifier_token": public_identifier_token}
 
     def _authenticate(self) -> None:
-        with httpx.Client() as client:
+        with httpx.Client(transport=self._transport) as client:
             response = client.post(
                 ACCESS_TOKEN_URL,
                 json=self._generate_access_token_payload(),
