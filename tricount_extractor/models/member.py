@@ -15,7 +15,7 @@ class Member:
             id=d["id"],
             uuid=d["uuid"],
             display_name=d["alias"]["display_name"],
-            status=d["status"]
+            status=d["status"],
         )
 
     def to_dict(self) -> dict:
@@ -23,5 +23,5 @@ class Member:
             "member_id": self.id,
             "member_uuid": self.uuid,
             "member_name": self.display_name,
-            "status": self.status
+            "status": self.status,
         }

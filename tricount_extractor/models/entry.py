@@ -1,5 +1,5 @@
-from dataclasses import  dataclass
-import  datetime
+from dataclasses import dataclass
+import datetime
 import enum
 from tricount_extractor.models.amount import Amount
 from tricount_extractor.models.allocation import Allocation
@@ -33,7 +33,9 @@ class Entry:
     @classmethod
     def from_json(cls, data: dict) -> Entry:
         data = data.get("RegistryEntry", data)
-        payer = data["membership_owned"].get("RegistryMembershipNonUser", data["membership_owned"])
+        payer = data["membership_owned"].get(
+            "RegistryMembershipNonUser", data["membership_owned"]
+        )
         return cls(
             id=data["id"],
             uuid=data["uuid"],
@@ -47,7 +49,7 @@ class Entry:
             payer_uuid=payer["uuid"],
             payer_name=payer["alias"]["display_name"],
             allocations=[Allocation.from_json(a) for a in data["allocations"]],
-            category=data.get("category", "UNCATEGORIZED")
+            category=data.get("category", "UNCATEGORIZED"),
         )
 
     @property

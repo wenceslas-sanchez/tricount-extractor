@@ -1,4 +1,4 @@
-from dataclasses import  dataclass
+from dataclasses import dataclass
 
 
 @dataclass
@@ -12,5 +12,5 @@ class Pagination:
         return cls(
             future_url=data.get("future_url"),
             newer_url=data.get("newer_url"),
-            older_url=data.get("older_url")
+            older_url=data.get("older_url"),
         )

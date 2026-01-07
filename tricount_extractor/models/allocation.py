@@ -19,13 +19,15 @@ class Allocation:
 
     @classmethod
     def from_json(cls, data: dict) -> Allocation:
-        membership = data["membership"].get("RegistryMembershipNonUser", data["membership"])
+        membership = data["membership"].get(
+            "RegistryMembershipNonUser", data["membership"]
+        )
         return cls(
             amount=Amount.from_json(data["amount"]),
             member_uuid=membership["uuid"],
             member_name=membership["alias"]["display_name"],
             type=AllocationType(data["type"]),
-            share_ratio=data.get("share_ratio")
+            share_ratio=data.get("share_ratio"),
         )
 
     def to_dict(self) -> dict:
