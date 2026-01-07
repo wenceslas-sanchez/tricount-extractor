@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Literal
 from tricount_extractor.models.amount import Amount
 import enum
 
