@@ -27,11 +27,11 @@ class TricountClient:
         self._access_token = None
         return None
 
-    def get_registry(self, public_identifier_token: str) -> httpx.Response:
+    def get_registry(self, registry_id: str) -> httpx.Response:
         with httpx.Client(transport=self._transport) as client:
             response = client.get(
                 self._registry_url,
-                params=self._registry_params(public_identifier_token),
+                params=self._registry_params(registry_id),
                 headers=self._get_headers_with_access_token(),
             )
             response.raise_for_status()
@@ -45,8 +45,8 @@ class TricountClient:
         return f"{USER_URL}/{self._access_token.user_id}/registry"
 
     @staticmethod
-    def _registry_params(public_identifier_token: str) -> dict[str, str]:
-        return {"public_identifier_token": public_identifier_token}
+    def _registry_params(registry_id: str) -> dict[str, str]:
+        return {"public_identifier_token": registry_id}
 
     def _authenticate(self) -> None:
         with httpx.Client(transport=self._transport) as client:
