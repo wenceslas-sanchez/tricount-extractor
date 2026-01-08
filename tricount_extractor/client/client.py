@@ -9,18 +9,25 @@ BASE_URL = "https://api.tricount.bunq.com"
 ACCESS_TOKEN_URL = f"{BASE_URL}/v1/session-registry-installation"
 USER_URL = f"{BASE_URL}/v1/user"
 USER_AGENT = "com.bunq.tricount.android:RELEASE:7.0.7:3174:ANDROID:13:C"
+MAX_RETRY = 3
 
 
 class TricountClient:
-    def __init__(self, *, transport: httpx.BaseTransport | None = None):
+    def __init__(
+        self,
+        *,
+        transport: httpx.BaseTransport | None = None,
+        max_retry: int = MAX_RETRY,
+    ):
         self._transport = transport
+        self._max_retry = max_retry
 
         self._application_id = self._generate_application_id()
 
         self._access_token: AccessToken | None = None
 
     def __enter__(self):
-        self._authenticate()
+        self._retry_authenticate()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -28,6 +35,19 @@ class TricountClient:
         return None
 
     def get_registry(self, registry_id: str) -> httpx.Response:
+        return self._retry_get_registry(registry_id)
+
+    def _retry_get_registry(self, registry_id: str, retry: int = 0) -> httpx.Response:
+        if retry >= self._max_retry:
+            msg = f"max retry {self._max_retry} reached"
+            raise ConnectionError(msg)
+        try:
+            return self._get_registry(registry_id)
+        except httpx.TimeoutException:
+            retry += 1
+            return self._retry_get_registry(registry_id, retry=retry)
+
+    def _get_registry(self, registry_id: str) -> httpx.Response:
         with httpx.Client(transport=self._transport) as client:
             response = client.get(
                 self._registry_url,
@@ -47,6 +67,16 @@ class TricountClient:
     @staticmethod
     def _registry_params(registry_id: str) -> dict[str, str]:
         return {"public_identifier_token": registry_id}
+
+    def _retry_authenticate(self, retry: int = 0) -> None:
+        if retry >= self._max_retry:
+            msg = f"max retry {self._max_retry} reached"
+            raise ConnectionError(msg)
+        try:
+            self._authenticate()
+        except httpx.TimeoutException:
+            retry += 1
+            self._retry_authenticate(retry=retry)
 
     def _authenticate(self) -> None:
         with httpx.Client(transport=self._transport) as client:
