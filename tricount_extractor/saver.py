@@ -7,9 +7,10 @@ from tricount_extractor.models.registry import Registry
 
 class RegistrySaver:
     def save(self, registry: Registry, folder: str) -> str:
+        dfs = registry.to_dataframe()
         path = self.get_path(registry, folder)
         with pd.ExcelWriter(path, engine="openpyxl") as writer:
-            for sheet_name, df in registry.to_dataframe().items():
+            for sheet_name, df in dfs.items():
                 df.to_excel(writer, sheet_name=sheet_name, index=True)
         return str(path)
 
