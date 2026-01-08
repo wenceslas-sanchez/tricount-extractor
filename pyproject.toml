@@ -1,7 +1,7 @@
 [project]
 name = "tricount-extractor"
 version = "0.1.0"
-description = "TODO"
+description = "Extract and save Tricount registries to Excel files"
 requires-python = ">=3.14"
 dependencies = [
     "cryptography>=46.0.3",
