@@ -1,0 +1,55 @@
+{
+    "Response": [{"Registry": {
+        "id": 2,
+        "created": "2025-01-01 10:00:00.000000",
+        "updated": "2025-01-02 10:00:00.000000",
+        "uuid": "reg-001",
+        "currency": "EUR",
+        "title": "Euro Trip",
+        "memberships": [
+            {"RegistryMembershipNonUser": {"id": 201, "uuid": "user-x", "status": "ACTIVE",
+                "alias": {"display_name": "Xavier", "pointer": {"type": "UUID", "value": "user-x", "name": "Xavier"}}}},
+            {"RegistryMembershipNonUser": {"id": 202, "uuid": "user-y", "status": "ACTIVE",
+                "alias": {"display_name": "Yara", "pointer": {"type": "UUID", "value": "user-y", "name": "Yara"}}}}
+        ],
+        "all_registry_entry": [
+            {"RegistryEntry": {
+                "id": 2001, "uuid": "entry-002",
+                "created": "2025-01-01 12:00:00.000000", "date": "2025-01-01 12:00:00.000000",
+                "description": "Hotel", "amount": {"currency": "EUR", "value": "-100.00"},
+                "amount_local": {"currency": "EUR", "value": "-100.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "NORMAL", "category": "ACCOMMODATION",
+                "membership_owned": {"RegistryMembershipNonUser": {"id": 201, "uuid": "user-x", "status": "ACTIVE",
+                    "alias": {"display_name": "Xavier", "pointer": {"type": "UUID", "value": "user-x", "name": "Xavier"}}}},
+                "allocations": [
+                    {"amount": {"currency": "EUR", "value": "-50.00"}, "amount_local": {"currency": "EUR", "value": "-50.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 201, "uuid": "user-x", "alias": {"display_name": "Xavier", "pointer": {"type": "UUID", "value": "user-x", "name": "Xavier"}}}}},
+                    {"amount": {"currency": "EUR", "value": "-50.00"}, "amount_local": {"currency": "EUR", "value": "-50.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 202, "uuid": "user-y", "alias": {"display_name": "Yara", "pointer": {"type": "UUID", "value": "user-y", "name": "Yara"}}}}}
+                ],
+                "attachment": []
+            }},
+            {"RegistryEntry": {
+                "id": 2002, "uuid": "entry-003",
+                "created": "2025-01-02 10:00:00.000000", "date": "2025-01-02 10:00:00.000000",
+                "description": "Reimbursement", "amount": {"currency": "EUR", "value": "-50.00"},
+                "amount_local": {"currency": "EUR", "value": "-50.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "BALANCE", "category": "UNCATEGORIZED",
+                "membership_owned": {"RegistryMembershipNonUser": {"id": 202, "uuid": "user-y", "status": "ACTIVE",
+                    "alias": {"display_name": "Yara", "pointer": {"type": "UUID", "value": "user-y", "name": "Yara"}}}},
+                "allocations": [
+                    {"amount": {"currency": "EUR", "value": "-50.00"}, "amount_local": {"currency": "EUR", "value": "-50.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 201, "uuid": "user-x", "alias": {"display_name": "Xavier", "pointer": {"type": "UUID", "value": "user-x", "name": "Xavier"}}}}},
+                    {"amount": {"currency": "EUR", "value": "0.00"}, "amount_local": {"currency": "EUR", "value": "0.00"},
+                     "type": "AMOUNT",
+                     "membership": {"RegistryMembershipNonUser": {"id": 202, "uuid": "user-y", "alias": {"display_name": "Yara", "pointer": {"type": "UUID", "value": "user-y", "name": "Yara"}}}}}
+                ],
+                "attachment": []
+            }}
+        ]
+    }}],
+    "Pagination": {"future_url": null, "newer_url": null, "older_url": null}
+}

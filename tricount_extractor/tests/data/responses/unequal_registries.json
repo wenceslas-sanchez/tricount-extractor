@@ -1,0 +1,42 @@
+{
+    "Response": [{"Registry": {
+        "id": 3,
+        "created": "2025-02-01 10:00:00.000000",
+        "updated": "2025-02-01 10:00:00.000000",
+        "uuid": "reg-003",
+        "currency": "USD",
+        "title": "Dinner Group",
+        "memberships": [
+            {"RegistryMembershipNonUser": {"id": 301, "uuid": "user-1", "status": "ACTIVE",
+                "alias": {"display_name": "One", "pointer": {"type": "UUID", "value": "user-1", "name": "One"}}}},
+            {"RegistryMembershipNonUser": {"id": 302, "uuid": "user-2", "status": "ACTIVE",
+                "alias": {"display_name": "Two", "pointer": {"type": "UUID", "value": "user-2", "name": "Two"}}}},
+            {"RegistryMembershipNonUser": {"id": 303, "uuid": "user-3", "status": "ACTIVE",
+                "alias": {"display_name": "Three", "pointer": {"type": "UUID", "value": "user-3", "name": "Three"}}}}
+        ],
+        "all_registry_entry": [
+            {"RegistryEntry": {
+                "id": 3001, "uuid": "entry-004",
+                "created": "2025-02-01 19:00:00.000000", "date": "2025-02-01 19:00:00.000000",
+                "description": "Restaurant", "amount": {"currency": "USD", "value": "-75.00"},
+                "amount_local": {"currency": "USD", "value": "-75.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "NORMAL", "category": "FOOD",
+                "membership_owned": {"RegistryMembershipNonUser": {"id": 301, "uuid": "user-1", "status": "ACTIVE",
+                    "alias": {"display_name": "One", "pointer": {"type": "UUID", "value": "user-1", "name": "One"}}}},
+                "allocations": [
+                    {"amount": {"currency": "USD", "value": "-30.00"}, "amount_local": {"currency": "USD", "value": "-30.00"},
+                     "type": "AMOUNT",
+                     "membership": {"RegistryMembershipNonUser": {"id": 301, "uuid": "user-1", "alias": {"display_name": "One", "pointer": {"type": "UUID", "value": "user-1", "name": "One"}}}}},
+                    {"amount": {"currency": "USD", "value": "-45.00"}, "amount_local": {"currency": "USD", "value": "-45.00"},
+                     "type": "AMOUNT",
+                     "membership": {"RegistryMembershipNonUser": {"id": 302, "uuid": "user-2", "alias": {"display_name": "Two", "pointer": {"type": "UUID", "value": "user-2", "name": "Two"}}}}},
+                    {"amount": {"currency": "USD", "value": "0.00"}, "amount_local": {"currency": "USD", "value": "0.00"},
+                     "type": "AMOUNT",
+                     "membership": {"RegistryMembershipNonUser": {"id": 303, "uuid": "user-3", "alias": {"display_name": "Three", "pointer": {"type": "UUID", "value": "user-3", "name": "Three"}}}}}
+                ],
+                "attachment": []
+            }}
+        ]
+    }}],
+    "Pagination": {"future_url": null, "newer_url": null, "older_url": null}
+}
