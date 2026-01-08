@@ -11,22 +11,31 @@ class Processor:
             return
         raise ExceptionGroup("failed to process some tricounts", errors)
 
-    @staticmethod
-    def _process(registry_ids: list[str], folder: str) -> list[Exception]:
+    def _process(self, registry_ids: list[str], folder: str) -> list[Exception]:
         errors = []
         with TricountClient() as client:
             for registry_id in registry_ids:
-                try:
-                    response = client.get_registry(registry_id)
-                    response_data = response.json()
-                    registry = Registry.from_json(response_data)
-                    saved_path = RegistrySaver().save(registry, folder)
-                    print(f"registry ID '{registry_id}' saved '{saved_path}'")
-                except Exception as e:
-                    error = Exception(f"failed to process tricount {registry_id}: {e}")
-                    error.__cause__ = e
-                    errors.append(error)
+                error = self._process_registry_id(client, registry_id, folder)
+                if error is None:
+                    continue
+                errors.append(error)
         return errors
+
+    @staticmethod
+    def _process_registry_id(
+        client: TricountClient, registry_id: str, folder: str
+    ) -> None | Exception:
+        try:
+            response = client.get_registry(registry_id)
+            response_data = response.json()
+            registry = Registry.from_json(response_data)
+            saved_path = RegistrySaver().save(registry, folder)
+            print(f"registry ID '{registry_id}' saved '{saved_path}'")
+            return None
+        except Exception as e:
+            error = Exception(f"failed to process tricount {registry_id}: {e}")
+            error.__cause__ = e
+            return error
 
 
 def main() -> None:
