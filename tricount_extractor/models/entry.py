@@ -39,8 +39,8 @@ class Entry:
         return cls(
             id=data["id"],
             uuid=data["uuid"],
-            created=datetime.fromisoformat(data["created"]),
-            date=datetime.fromisoformat(data["date"]),
+            created=datetime.datetime.fromisoformat(data["created"]),
+            date=datetime.datetime.fromisoformat(data["date"]),
             description=data["description"],
             amount=Amount.from_json(data["amount"]),
             status=data["status"],
