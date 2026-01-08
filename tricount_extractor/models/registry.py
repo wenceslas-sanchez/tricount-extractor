@@ -21,6 +21,7 @@ class Registry:
 
     @classmethod
     def from_json(cls, data: dict) -> Registry:
+        pagination = data["Pagination"]
         data = data["Response"][0]["Registry"]
 
         return cls(
@@ -32,7 +33,7 @@ class Registry:
             updated=datetime.datetime.fromisoformat(data["updated"]),
             members=[Member.from_json(m) for m in data["memberships"]],
             entries=[Entry.from_json(e) for e in data.get("all_registry_entry", [])],
-            pagination=Pagination.from_json(data["Pagination"]),
+            pagination=Pagination.from_json(pagination),
         )
 
     @classmethod
