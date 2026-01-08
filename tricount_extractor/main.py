@@ -43,8 +43,8 @@ def main() -> None:
 
     try:
         Processor().process(args.registry_id, args.folder)
-    except Exception:
-        print("error occured while processing registries.")
+    except ExceptionGroup as exc:
+        print(f"error occured while processing registries: {exc.exceptions}")
         return 1
 
     return 0
