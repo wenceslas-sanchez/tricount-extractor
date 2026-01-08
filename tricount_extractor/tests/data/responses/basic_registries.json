@@ -1,0 +1,46 @@
+{
+    "Response": [{"Registry": {
+        "id": 1,
+        "created": "2025-01-01 10:00:00.000000",
+        "updated": "2025-01-01 12:00:00.000000",
+        "uuid": "reg-001",
+        "currency": "USD",
+        "title": "Test Trip",
+        "memberships": [
+            {"RegistryMembershipNonUser": {
+                "id": 101, "uuid": "user-a", "status": "ACTIVE",
+                "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}
+            }},
+            {"RegistryMembershipNonUser": {
+                "id": 102, "uuid": "user-b", "status": "ACTIVE",
+                "alias": {"display_name": "Bob", "pointer": {"type": "UUID", "value": "user-b", "name": "Bob"}}
+            }}
+        ],
+        "all_registry_entry": [
+            {"RegistryEntry": {
+                "id": 1001, "uuid": "entry-001",
+                "created": "2025-01-01 12:00:00.000000",
+                "date": "2025-01-01 12:00:00.000000",
+                "description": "Lunch",
+                "amount": {"currency": "USD", "value": "-20.00"},
+                "amount_local": {"currency": "USD", "value": "-20.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "NORMAL",
+                "category": "FOOD",
+                "membership_owned": {"RegistryMembershipNonUser": {
+                    "id": 101, "uuid": "user-a", "status": "ACTIVE",
+                    "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}
+                }},
+                "allocations": [
+                    {"amount": {"currency": "USD", "value": "-10.00"}, "amount_local": {"currency": "USD", "value": "-10.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 101, "uuid": "user-a", "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}}}},
+                    {"amount": {"currency": "USD", "value": "-10.00"}, "amount_local": {"currency": "USD", "value": "-10.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 102, "uuid": "user-b", "alias": {"display_name": "Bob", "pointer": {"type": "UUID", "value": "user-b", "name": "Bob"}}}}}
+                ],
+                "attachment": []
+            }}
+        ]
+    }}],
+    "Pagination": {"future_url": null, "newer_url": null, "older_url": null}
+}

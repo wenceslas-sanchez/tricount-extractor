@@ -1,0 +1,13 @@
+{
+    "Response": [{"Registry": {
+        "id": 5,
+        "created": "2025-01-01 00:00:00.000000",
+        "updated": "2025-01-01 00:00:00.000000",
+        "uuid": "reg-000",
+        "currency": "USD",
+        "title": "Empty Trip",
+        "memberships": [],
+        "all_registry_entry": []
+    }}],
+    "Pagination": {"future_url": null, "newer_url": null, "older_url": null}
+}
