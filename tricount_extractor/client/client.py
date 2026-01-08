@@ -113,7 +113,7 @@ class AccessToken:
         for item in response_items:
             if "Token" in item:
                 access_token = item["Token"]["token"]
-            elif "UserPerson":
+            elif "UserPerson" in item:
                 user_id = item["UserPerson"]["id"]
             continue
 
