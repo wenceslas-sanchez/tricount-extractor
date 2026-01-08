@@ -10,6 +10,9 @@ dependencies = [
     "pandas>=2.3.3",
 ]
 
+[project.scripts]
+tricount-extractor = "tricount_extractor.main:main"
+
 [dependency-groups]
 lint = [
     "pre-commit==4.5.1",
