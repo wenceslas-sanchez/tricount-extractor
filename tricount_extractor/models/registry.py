@@ -46,6 +46,7 @@ class Registry:
             "members": self._to_members_dataframe(),
             "entries": self._to_entries_dataframe(),
             "allocations": self._to_allocations_dataframe(),
+            "attachments": self._to_attachments_dataframe(),
             "balances": self._to_balance_dataframe(),
         }
 
@@ -72,3 +73,9 @@ class Registry:
 
     def _to_members_dataframe(self) -> pd.DataFrame:
         return pd.DataFrame([m.to_dict() for m in self.members])
+
+    def _to_attachments_dataframe(self) -> pd.DataFrame:
+        rows = [d for e in self.entries for d in e.to_attachment_dicts()]
+        if not rows:
+            return pd.DataFrame(columns=["entry_id", "url"])
+        return pd.DataFrame(rows)
