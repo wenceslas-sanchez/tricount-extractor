@@ -28,7 +28,7 @@ uv run tricount-extractor -id abc123 xyz789 -f ./output
 
 ## Output Format
 
-Each registry is saved as an Excel file with 4 sheets:
+Each registry is saved as an Excel file with 5 sheets:
 
 ### 1. members
 Registry participants with their details.
@@ -68,7 +68,15 @@ How each expense is split among participants.
 | share | Amount allocated to this participant |
 | currency | Currency code |
 
-### 4. balances
+### 4. attachments
+Image URLs attached to expense entries.
+
+| Column | Description |
+|--------|-------------|
+| entry_id | Reference to the expense entry |
+| url | URL of the attached image |
+
+### 5. balances
 Final balance for each member (who owes/is owed).
 
 | Column | Description |
