@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import datetime
 import enum
 from tricount_extractor.models.amount import Amount
@@ -29,6 +29,7 @@ class Entry:
     payer_name: str
     allocations: list[Allocation]
     category: str
+    urls: list[str] = field(default_factory=list)
 
     @classmethod
     def from_json(cls, data: dict) -> Entry:
@@ -50,6 +51,7 @@ class Entry:
             payer_name=payer["alias"]["display_name"],
             allocations=[Allocation.from_json(a) for a in data["allocations"]],
             category=data.get("category", "UNCATEGORIZED"),
+            urls=cls._extract_attachment_urls(data),
         )
 
     @property
@@ -68,6 +70,9 @@ class Entry:
             "category": self.category,
         }
 
+    def to_attachment_dicts(self) -> list[dict]:
+        return [{"entry_id": self.id, "url": url} for url in self.urls]
+
     def to_allocation_dicts(self) -> list[dict]:
         base = {
             "entry_id": self.id,
@@ -77,3 +82,13 @@ class Entry:
             "is_reimbursement": self.is_reimbursement,
         }
         return [{**base, **a.to_dict()} for a in self.allocations]
+
+    @staticmethod
+    def _extract_attachment_urls(data: dict) -> list[str]:
+        urls = []
+        for attachment in data.get("attachment", []):
+            for url_obj in attachment.get("urls", []):
+                if (url := url_obj.get("url")) is None:
+                    continue
+                urls.append(url)
+        return urls
