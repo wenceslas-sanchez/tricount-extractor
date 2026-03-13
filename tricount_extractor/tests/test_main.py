@@ -250,3 +250,69 @@ def test_process_no_registries_raises_error(transport_no_registries, tmp_path):
 
     saved_files = list(tmp_path.glob("*.xlsx"))
     assert len(saved_files) == 0
+
+
+@pytest.fixture
+def single_attachment_data(
+    responses_dir: Annotated[pathlib.Path, pytest.fixture],
+) -> dict:
+    with open(responses_dir / "registry_with_single_attachment.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def multiple_attachments_data(
+    responses_dir: Annotated[pathlib.Path, pytest.fixture],
+) -> dict:
+    with open(responses_dir / "registry_with_multiple_attachments.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def transport_single_attachment(auth_response, single_attachment_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=single_attachment_data)
+
+    return httpx.MockTransport(handler)
+
+
+@pytest.fixture
+def transport_multiple_attachments(auth_response, multiple_attachments_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=multiple_attachments_data)
+
+    return httpx.MockTransport(handler)
+
+
+def test_attachments_sheet_with_single_attachment(
+    transport_single_attachment, tmp_path, reference_excel_dir
+):
+    processor = Processor()
+    processor.process(["reg-004"], str(tmp_path), transport=transport_single_attachment)
+
+    saved_files = list(tmp_path.glob("*.xlsx"))
+    assert len(saved_files) == 1
+
+    generated_file = saved_files[0]
+    compare_excel_files(generated_file, reference_excel_dir / "attachment_test_4.xlsx")
+
+
+def test_attachments_sheet_with_multiple_attachments(
+    transport_multiple_attachments, tmp_path, reference_excel_dir
+):
+    processor = Processor()
+    processor.process(
+        ["reg-005"], str(tmp_path), transport=transport_multiple_attachments
+    )
+
+    saved_files = list(tmp_path.glob("*.xlsx"))
+    assert len(saved_files) == 1
+
+    generated_file = saved_files[0]
+    compare_excel_files(
+        generated_file, reference_excel_dir / "multi_attachment_test_5.xlsx"
+    )

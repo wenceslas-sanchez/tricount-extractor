@@ -1,0 +1,47 @@
+{
+    "Response": [{"Registry": {
+        "id": 4,
+        "created": "2025-01-01 10:00:00.000000",
+        "updated": "2025-01-01 12:00:00.000000",
+        "uuid": "reg-004",
+        "currency": "EUR",
+        "title": "Attachment Test",
+        "memberships": [
+            {"RegistryMembershipNonUser": {
+                "id": 101, "uuid": "user-a", "status": "ACTIVE",
+                "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}
+            }}
+        ],
+        "all_registry_entry": [
+            {"RegistryEntry": {
+                "id": 1001, "uuid": "entry-001",
+                "created": "2025-01-01 12:00:00.000000",
+                "date": "2025-01-01 12:00:00.000000",
+                "description": "Receipt",
+                "amount": {"currency": "EUR", "value": "-15.00"},
+                "amount_local": {"currency": "EUR", "value": "-15.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "NORMAL",
+                "category": "FOOD",
+                "membership_owned": {"RegistryMembershipNonUser": {
+                    "id": 101, "uuid": "user-a", "status": "ACTIVE",
+                    "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}
+                }},
+                "allocations": [
+                    {"amount": {"currency": "EUR", "value": "-15.00"}, "amount_local": {"currency": "EUR", "value": "-15.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 101, "uuid": "user-a", "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}}}}
+                ],
+                "attachment": [
+                    {
+                        "id": 1,
+                        "description": "",
+                        "content_type": "image/jpeg",
+                        "urls": [{"type": "ORIGINAL", "url": "https://example.com/receipt1.jpg"}],
+                        "uuid": "attach-001"
+                    }
+                ]
+            }}
+        ]
+    }}],
+    "Pagination": {"future_url": null, "newer_url": null, "older_url": null}
+}
