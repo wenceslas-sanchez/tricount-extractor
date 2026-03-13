@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import datetime
 import enum
 from tricount_extractor.models.amount import Amount
@@ -29,7 +29,7 @@ class Entry:
     payer_name: str
     allocations: list[Allocation]
     category: str
-    urls: list[str] | None = None
+    urls: list[str] = field(default_factory=list)
 
     @classmethod
     def from_json(cls, data: dict) -> Entry:
@@ -71,7 +71,7 @@ class Entry:
         }
 
     def to_attachment_dicts(self) -> list[dict]:
-        return [{"entry_id": self.id, "url": url} for url in (self.urls or [])]
+        return [{"entry_id": self.id, "url": url} for url in self.urls]
 
     def to_allocation_dicts(self) -> list[dict]:
         base = {
