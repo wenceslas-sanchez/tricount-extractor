@@ -349,12 +349,3 @@ def test_foreign_currency_shows_original_amount(
     compare_excel_files(
         generated_file, reference_excel_dir / "foreign_currency_trip_6.xlsx"
     )
-
-    entries_df = __import__("pandas").read_excel(
-        generated_file, sheet_name="entries", index_col=0
-    )
-    sushi_row = entries_df[entries_df["description"] == "Sushi"].iloc[0]
-    assert sushi_row["currency"] == "EUR"
-    assert sushi_row["amount"] == pytest.approx(18.52, abs=0.01)
-    assert sushi_row["original_currency"] == "JPY"
-    assert sushi_row["original_amount"] == pytest.approx(3000.0, abs=0.01)
