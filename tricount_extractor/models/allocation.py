@@ -11,6 +11,7 @@ class AllocationType(enum.StrEnum):
 @dataclass
 class Allocation:
     amount: Amount
+    amount_local: Amount
     member_uuid: str
     member_name: str
     type: AllocationType
@@ -23,6 +24,7 @@ class Allocation:
         )
         return cls(
             amount=Amount.from_json(data["amount"]),
+            amount_local=Amount.from_json(data["amount_local"]),
             member_uuid=membership["uuid"],
             member_name=membership["alias"]["display_name"],
             type=AllocationType(data["type"]),
@@ -34,4 +36,6 @@ class Allocation:
             "participant": self.member_name,
             "share": abs(self.amount.value),
             "currency": self.amount.currency,
+            "original_share": abs(self.amount_local.value),
+            "original_currency": self.amount_local.currency,
         }
