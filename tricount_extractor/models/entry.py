@@ -22,6 +22,7 @@ class Entry:
     date: datetime.datetime
     description: str
     amount: Amount
+    amount_local: Amount
     status: str
     type: EntryType
     type_transaction: EntryTypeTransaction
@@ -44,6 +45,7 @@ class Entry:
             date=datetime.datetime.fromisoformat(data["date"]),
             description=data["description"],
             amount=Amount.from_json(data["amount"]),
+            amount_local=Amount.from_json(data["amount_local"]),
             status=data["status"],
             type=EntryType(data["type"]),
             type_transaction=EntryTypeTransaction(data["type_transaction"]),
@@ -65,6 +67,8 @@ class Entry:
             "description": self.description,
             "amount": abs(self.amount.value),
             "currency": self.amount.currency,
+            "original_amount": abs(self.amount_local.value),
+            "original_currency": self.amount_local.currency,
             "payer": self.payer_name,
             "is_reimbursement": self.is_reimbursement,
             "category": self.category,

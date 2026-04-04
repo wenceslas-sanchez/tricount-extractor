@@ -316,3 +316,36 @@ def test_attachments_sheet_with_multiple_attachments(
     compare_excel_files(
         generated_file, reference_excel_dir / "multi_attachment_test_5.xlsx"
     )
+
+
+@pytest.fixture
+def foreign_currency_data(
+    responses_dir: Annotated[pathlib.Path, pytest.fixture],
+) -> dict:
+    with open(responses_dir / "registry_with_foreign_currency.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def transport_foreign_currency(auth_response, foreign_currency_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=foreign_currency_data)
+
+    return httpx.MockTransport(handler)
+
+
+def test_foreign_currency_shows_original_amount(
+    transport_foreign_currency, tmp_path, reference_excel_dir
+):
+    processor = Processor()
+    processor.process(["reg-006"], str(tmp_path), transport=transport_foreign_currency)
+
+    saved_files = list(tmp_path.glob("*.xlsx"))
+    assert len(saved_files) == 1
+
+    generated_file = saved_files[0]
+    compare_excel_files(
+        generated_file, reference_excel_dir / "foreign_currency_trip_6.xlsx"
+    )
