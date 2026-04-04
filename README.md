@@ -50,6 +50,8 @@ All expense entries in the registry.
 | description | Expense description |
 | amount | Total amount paid |
 | currency | Currency code (USD, EUR, etc.) |
+| original_amount | Amount paid in the original currency |
+| original_currency | Original currency code if different from registry currency |
 | payer | Name of person who paid |
 | is_reimbursement | True if this is a reimbursement |
 | category | Expense category (FOOD, ACCOMMODATION, etc.) |
@@ -67,6 +69,8 @@ How each expense is split among participants.
 | participant | Name of person this allocation applies to |
 | share | Amount allocated to this participant |
 | currency | Currency code |
+| original_share | Share amount in the original currency |
+| original_currency | Original currency code if different from registry currency |
 
 ### 4. attachments
 Image URLs attached to expense entries.
