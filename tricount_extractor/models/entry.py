@@ -12,6 +12,7 @@ class EntryType(enum.StrEnum):
 class EntryTypeTransaction(enum.StrEnum):
     NORMAL = "NORMAL"
     BALANCE = "BALANCE"
+    INCOME = "INCOME"
 
 
 @dataclass
@@ -52,7 +53,7 @@ class Entry:
             payer_uuid=payer["uuid"],
             payer_name=payer["alias"]["display_name"],
             allocations=[Allocation.from_json(a) for a in data["allocations"]],
-            category=data.get("category", "UNCATEGORIZED"),
+            category=cls._extract_category(data),
             urls=cls._extract_attachment_urls(data),
         )
 
@@ -96,3 +97,9 @@ class Entry:
                     continue
                 urls.append(url)
         return urls
+
+    @staticmethod
+    def _extract_category(data: dict) -> str:
+        if (custom_category := data.get("category_custom")) is not None:
+            return custom_category
+        return data.get("category", "UNCATEGORIZED")
