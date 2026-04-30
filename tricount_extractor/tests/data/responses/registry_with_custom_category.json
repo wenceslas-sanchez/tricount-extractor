@@ -1,0 +1,71 @@
+{
+    "Response": [{"Registry": {
+        "id": 8,
+        "created": "2025-02-01 10:00:00.000000",
+        "updated": "2025-02-02 10:00:00.000000",
+        "uuid": "reg-008",
+        "currency": "EUR",
+        "title": "Custom Category Trip",
+        "memberships": [
+            {"RegistryMembershipNonUser": {
+                "id": 801, "uuid": "user-a", "status": "ACTIVE",
+                "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}
+            }},
+            {"RegistryMembershipNonUser": {
+                "id": 802, "uuid": "user-b", "status": "ACTIVE",
+                "alias": {"display_name": "Bob", "pointer": {"type": "UUID", "value": "user-b", "name": "Bob"}}
+            }}
+        ],
+        "all_registry_entry": [
+            {"RegistryEntry": {
+                "id": 8001, "uuid": "entry-8001",
+                "created": "2025-02-01 12:00:00.000000",
+                "date": "2025-02-01 12:00:00.000000",
+                "description": "Custom Category Expense",
+                "amount": {"currency": "EUR", "value": "-50.00"},
+                "amount_local": {"currency": "EUR", "value": "-50.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "NORMAL",
+                "category": "OTHER",
+                "category_custom": "my custom label",
+                "membership_owned": {"RegistryMembershipNonUser": {
+                    "id": 801, "uuid": "user-a", "status": "ACTIVE",
+                    "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}
+                }},
+                "allocations": [
+                    {"amount": {"currency": "EUR", "value": "-25.00"}, "amount_local": {"currency": "EUR", "value": "-25.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 801, "uuid": "user-a", "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}}}},
+                    {"amount": {"currency": "EUR", "value": "-25.00"}, "amount_local": {"currency": "EUR", "value": "-25.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 802, "uuid": "user-b", "alias": {"display_name": "Bob", "pointer": {"type": "UUID", "value": "user-b", "name": "Bob"}}}}}
+                ],
+                "attachment": []
+            }},
+            {"RegistryEntry": {
+                "id": 8002, "uuid": "entry-8002",
+                "created": "2025-02-02 09:00:00.000000",
+                "date": "2025-02-02 09:00:00.000000",
+                "description": "Regular Expense",
+                "amount": {"currency": "EUR", "value": "-30.00"},
+                "amount_local": {"currency": "EUR", "value": "-30.00"},
+                "status": "ACTIVE", "type": "MANUAL", "type_transaction": "NORMAL",
+                "category": "UNCATEGORIZED",
+                "category_custom": null,
+                "membership_owned": {"RegistryMembershipNonUser": {
+                    "id": 802, "uuid": "user-b", "status": "ACTIVE",
+                    "alias": {"display_name": "Bob", "pointer": {"type": "UUID", "value": "user-b", "name": "Bob"}}
+                }},
+                "allocations": [
+                    {"amount": {"currency": "EUR", "value": "-15.00"}, "amount_local": {"currency": "EUR", "value": "-15.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 801, "uuid": "user-a", "alias": {"display_name": "Alice", "pointer": {"type": "UUID", "value": "user-a", "name": "Alice"}}}}},
+                    {"amount": {"currency": "EUR", "value": "-15.00"}, "amount_local": {"currency": "EUR", "value": "-15.00"},
+                     "type": "RATIO", "share_ratio": 1,
+                     "membership": {"RegistryMembershipNonUser": {"id": 802, "uuid": "user-b", "alias": {"display_name": "Bob", "pointer": {"type": "UUID", "value": "user-b", "name": "Bob"}}}}}
+                ],
+                "attachment": []
+            }}
+        ]
+    }}],
+    "Pagination": {"future_url": null, "newer_url": null, "older_url": null}
+}
