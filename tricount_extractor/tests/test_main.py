@@ -319,6 +319,70 @@ def test_attachments_sheet_with_multiple_attachments(
 
 
 @pytest.fixture
+def income_registry_data(
+    responses_dir: Annotated[pathlib.Path, pytest.fixture],
+) -> dict:
+    with open(responses_dir / "registry_with_income.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def transport_income_registry(auth_response, income_registry_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=income_registry_data)
+
+    return httpx.MockTransport(handler)
+
+
+def test_process_income_entry_successfully(
+    transport_income_registry, tmp_path, reference_excel_dir
+):
+    processor = Processor()
+    processor.process(["reg-007"], str(tmp_path), transport=transport_income_registry)
+
+    saved_files = list(tmp_path.glob("*.xlsx"))
+    assert len(saved_files) == 1
+
+    generated_file = saved_files[0]
+    compare_excel_files(generated_file, reference_excel_dir / "income_trip_7.xlsx")
+
+
+@pytest.fixture
+def custom_category_data(
+    responses_dir: Annotated[pathlib.Path, pytest.fixture],
+) -> dict:
+    with open(responses_dir / "registry_with_custom_category.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def transport_custom_category(auth_response, custom_category_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=custom_category_data)
+
+    return httpx.MockTransport(handler)
+
+
+def test_process_custom_category_uses_custom_label(
+    transport_custom_category, tmp_path, reference_excel_dir
+):
+    processor = Processor()
+    processor.process(["reg-008"], str(tmp_path), transport=transport_custom_category)
+
+    saved_files = list(tmp_path.glob("*.xlsx"))
+    assert len(saved_files) == 1
+
+    generated_file = saved_files[0]
+    compare_excel_files(
+        generated_file, reference_excel_dir / "custom_category_trip_8.xlsx"
+    )
+
+
+@pytest.fixture
 def foreign_currency_data(
     responses_dir: Annotated[pathlib.Path, pytest.fixture],
 ) -> dict:
