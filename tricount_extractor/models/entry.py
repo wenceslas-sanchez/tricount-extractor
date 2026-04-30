@@ -12,6 +12,7 @@ class EntryType(enum.StrEnum):
 class EntryTypeTransaction(enum.StrEnum):
     NORMAL = "NORMAL"
     BALANCE = "BALANCE"
+    INCOME = "INCOME"
 
 
 @dataclass
