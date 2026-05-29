@@ -1,8 +1,8 @@
 import httpx
 
-from tricount_extractor.parse_args import parse_args
-from tricount_extractor.client.client import TricountClient
+from tricount_extractor.client.client import DEFAULT_TIMEOUT, TricountClient
 from tricount_extractor.models.registry import Registry
+from tricount_extractor.parse_args import parse_args
 from tricount_extractor.saver import RegistrySaver
 
 
@@ -13,8 +13,11 @@ class Processor:
         folder: str,
         *,
         transport: httpx.BaseTransport | None = None,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
-        errors = self._process(registry_ids, folder, transport=transport)
+        errors = self._process(
+            registry_ids, folder, transport=transport, timeout=timeout
+        )
         if len(errors) == 0:
             return
         raise ExceptionGroup("failed to process some tricounts", errors)
@@ -25,9 +28,10 @@ class Processor:
         folder: str,
         *,
         transport: httpx.BaseTransport | None = None,
+        timeout: float | None,
     ) -> list[Exception]:
         errors = []
-        with TricountClient(transport=transport) as client:
+        with TricountClient(transport=transport, timeout=timeout) as client:
             for registry_id in registry_ids:
                 error = self._process_registry_id(client, registry_id, folder)
                 if error is None:
@@ -56,7 +60,7 @@ def main() -> None:
     args = parse_args()
 
     try:
-        Processor().process(args.registry_id, args.folder)
+        Processor().process(args.registry_id, args.folder, timeout=args.timeout)
     except ExceptionGroup as exc:
         print(f"error occured while processing registries: {exc.exceptions}")
         return 1

@@ -10,6 +10,7 @@ ACCESS_TOKEN_URL = f"{BASE_URL}/v1/session-registry-installation"
 USER_URL = f"{BASE_URL}/v1/user"
 USER_AGENT = "com.bunq.tricount.android:RELEASE:7.0.7:3174:ANDROID:13:C"
 MAX_RETRY = 3
+DEFAULT_TIMEOUT = 5
 
 
 class TricountClient:
@@ -18,9 +19,11 @@ class TricountClient:
         *,
         transport: httpx.BaseTransport | None = None,
         max_retry: int = MAX_RETRY,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ):
         self._transport = transport
         self._max_retry = max_retry
+        self._timeout = timeout
 
         self._application_id = self._generate_application_id()
 
@@ -48,7 +51,7 @@ class TricountClient:
             return self._retry_get_registry(registry_id, retry=retry)
 
     def _get_registry(self, registry_id: str) -> httpx.Response:
-        with httpx.Client(transport=self._transport) as client:
+        with httpx.Client(transport=self._transport, timeout=self._timeout) as client:
             response = client.get(
                 self._registry_url,
                 params=self._registry_params(registry_id),
@@ -79,7 +82,7 @@ class TricountClient:
             self._retry_authenticate(retry=retry)
 
     def _authenticate(self) -> None:
-        with httpx.Client(transport=self._transport) as client:
+        with httpx.Client(transport=self._transport, timeout=self._timeout) as client:
             response = client.post(
                 ACCESS_TOKEN_URL,
                 json=self._generate_access_token_payload(),
