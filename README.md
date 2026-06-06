@@ -46,14 +46,18 @@ All expense entries in the registry.
 | Column | Description |
 |--------|-------------|
 | entry_id | Unique entry identifier |
+| created | Timestamp when the entry was created (may differ from `date`) |
 | date | Entry date and time |
 | description | Expense description |
-| amount | Total amount paid |
+| amount | Total amount in registry currency (negative = expense, positive = income) |
 | currency | Currency code (USD, EUR, etc.) |
-| original_amount | Amount paid in the original currency |
+| original_amount | Amount in the original currency (negative = expense, positive = income) |
 | original_currency | Original currency code if different from registry currency |
 | payer | Name of person who paid |
 | is_reimbursement | True if this is a reimbursement |
+| type_transaction | Transaction type: NORMAL (expense), INCOME, or BALANCE (reimbursement) |
+| status | Entry status (ACTIVE, etc.) |
+| type | Entry type (MANUAL, etc.) |
 | category | Expense category (FOOD, ACCOMMODATION, etc.) |
 
 ### 3. allocations
@@ -66,11 +70,14 @@ How each expense is split among participants.
 | description | Expense description |
 | payer | Name of person who paid |
 | is_reimbursement | True if this is a reimbursement |
+| type_transaction | Transaction type: NORMAL (expense), INCOME, or BALANCE (reimbursement) |
 | participant | Name of person this allocation applies to |
-| share | Amount allocated to this participant |
+| share | Amount allocated to this participant (negative = expense, positive = income) |
 | currency | Currency code |
-| original_share | Share amount in the original currency |
+| original_share | Share in the original currency (negative = expense, positive = income) |
 | original_currency | Original currency code if different from registry currency |
+| split_type | How the split was calculated: RATIO (equal/weighted) or AMOUNT (fixed) |
+| share_ratio | Weight used for ratio-based splits (e.g. 1, 2) |
 
 ### 4. attachments
 Image URLs attached to expense entries.
