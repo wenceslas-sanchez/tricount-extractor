@@ -64,14 +64,18 @@ class Entry:
     def to_dict(self) -> dict:
         return {
             "entry_id": self.id,
+            "created": self.created,
             "date": self.date,
             "description": self.description,
-            "amount": abs(self.amount.value),
+            "amount": self.amount.value,
             "currency": self.amount.currency,
-            "original_amount": abs(self.amount_local.value),
+            "original_amount": self.amount_local.value,
             "original_currency": self.amount_local.currency,
             "payer": self.payer_name,
             "is_reimbursement": self.is_reimbursement,
+            "type_transaction": self.type_transaction.value,
+            "status": self.status,
+            "type": self.type.value,
             "category": self.category,
         }
 
@@ -85,6 +89,7 @@ class Entry:
             "description": self.description,
             "payer": self.payer_name,
             "is_reimbursement": self.is_reimbursement,
+            "type_transaction": self.type_transaction.value,
         }
         return [{**base, **a.to_dict()} for a in self.allocations]
 
