@@ -43,6 +43,11 @@ class Processor:
             response = client.get_registry(registry_id)
             response_data = response.json()
             registry = Registry.from_json(response_data)
+            if registry.pagination.has_more:
+                print(
+                    f"WARNING: registry '{registry_id}' has paginated data "
+                    f"— export may be incomplete"
+                )
             saved_path = RegistrySaver().save(registry, folder)
             print(f"registry ID '{registry_id}' saved '{saved_path}'")
             return None
