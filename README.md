@@ -14,17 +14,54 @@ uv sync --all-groups
 
 ## Usage
 
-Extract one or more Tricount registries:
+### Finding your registry ID
+
+The registry ID is the token at the end of a Tricount **share link**. To get it:
+
+1. Open the Tricount app (iOS/Android) or [tricount.com](https://tricount.com)
+2. Open the group you want to export
+3. Tap **Share** or **Invite** to get the sharing link
+4. The link looks like `https://tricount.com/tXxXxXxXx` — the part after `tricount.com/` is your registry ID (e.g. `tXxXxXxXx`)
+
+### Basic usage
 
 ```bash
-uv run tricount-extractor -id <registry-id> [<registry-id> ...] -f <output-folder>
+uv run tricount-extractor -id <registry-id> -f <output-folder>
 ```
 
-Example:
+### Multiple registries at once
+
+Pass multiple IDs separated by spaces to export them all in one run:
 
 ```bash
-uv run tricount-extractor -id abc123 xyz789 -f ./output
+uv run tricount-extractor -id <id1> <id2> <id3> -f ./output
 ```
+
+### Timeout
+
+Large registries with many entries may take longer to fetch from the API. Use `-t` to increase the HTTP timeout (default: 5 seconds):
+
+```bash
+uv run tricount-extractor -id <registry-id> -f ./output -t 60
+```
+
+Use `-t None` to disable the timeout entirely.
+
+### Output files
+
+Each registry is saved as `<title>_<registry-id>.xlsx` in the output folder. Running the tool again for the same registry **overwrites** the existing file — rename or move previous exports if you want to keep them.
+
+### Understanding amounts
+
+Amounts preserve the sign from the API:
+
+| type_transaction | Amount sign | Meaning |
+|------------------|-------------|---------|
+| NORMAL | negative | An expense (money spent) |
+| INCOME | positive | Shared income or refund (money received) |
+| BALANCE | negative | A settlement/reimbursement between members |
+
+The `amount` and `currency` columns show the value converted to the registry's currency. The `original_amount` and `original_currency` columns show what was actually paid if the expense was in a different currency (e.g. paying in JPY for a EUR registry).
 
 ## Output Format
 
