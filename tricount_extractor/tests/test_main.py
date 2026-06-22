@@ -413,3 +413,197 @@ def test_foreign_currency_shows_original_amount(
     compare_excel_files(
         generated_file, reference_excel_dir / "foreign_currency_trip_6.xlsx"
     )
+
+
+# --- Tests for issue #38: type_transaction column ---
+
+
+def test_income_entry_has_type_transaction_column(
+    transport_income_registry, tmp_path
+):
+    processor = Processor()
+    processor.process(["reg-007"], str(tmp_path), transport=transport_income_registry)
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    entries_df = pd.read_excel(saved_file, sheet_name="entries", index_col=0)
+
+    assert "type_transaction" in entries_df.columns
+    assert set(entries_df["type_transaction"].unique()) == {"NORMAL", "INCOME"}
+
+
+def test_income_entry_distinguishable_from_normal(
+    transport_income_registry, tmp_path
+):
+    processor = Processor()
+    processor.process(["reg-007"], str(tmp_path), transport=transport_income_registry)
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    entries_df = pd.read_excel(saved_file, sheet_name="entries", index_col=0)
+
+    income_rows = entries_df[entries_df["type_transaction"] == "INCOME"]
+    normal_rows = entries_df[entries_df["type_transaction"] == "NORMAL"]
+
+    assert len(income_rows) == 1
+    assert income_rows.iloc[0]["description"] == "Shared Income"
+
+    assert len(normal_rows) >= 1
+    assert all(r["is_reimbursement"] is False for _, r in normal_rows.iterrows())
+    assert all(r["is_reimbursement"] is False for _, r in income_rows.iterrows())
+
+
+def test_reimbursement_has_balance_type_transaction(
+    transport_multiple_success, tmp_path
+):
+    processor = Processor()
+    processor.process(
+        ["reg-001", "reg-002"], str(tmp_path), transport=transport_multiple_success
+    )
+
+    saved_files = sorted(tmp_path.glob("*.xlsx"))
+    # reg-002 is the reimbursement registry
+    reimb_file = saved_files[1]
+    entries_df = pd.read_excel(reimb_file, sheet_name="entries", index_col=0)
+
+    assert "type_transaction" in entries_df.columns
+    reimb_rows = entries_df[entries_df["is_reimbursement"]]
+    assert all(r["type_transaction"] == "BALANCE" for _, r in reimb_rows.iterrows())
+
+
+def test_amounts_preserve_sign(
+    transport_income_registry, tmp_path
+):
+    processor = Processor()
+    processor.process(["reg-007"], str(tmp_path), transport=transport_income_registry)
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    entries_df = pd.read_excel(saved_file, sheet_name="entries", index_col=0)
+    alloc_df = pd.read_excel(saved_file, sheet_name="allocations", index_col=0)
+
+    # Expenses should be negative
+    normal_entries = entries_df[entries_df["type_transaction"] == "NORMAL"]
+    assert all(normal_entries["amount"] < 0)
+    assert all(normal_entries["original_amount"] < 0)
+
+    # Incomes should be positive
+    income_entries = entries_df[entries_df["type_transaction"] == "INCOME"]
+    assert all(income_entries["amount"] > 0)
+    assert all(income_entries["original_amount"] > 0)
+
+    # Allocation shares should preserve sign too
+    normal_allocs = alloc_df[alloc_df["type_transaction"] == "NORMAL"]
+    assert all(normal_allocs["share"] < 0)
+
+    income_allocs = alloc_df[alloc_df["type_transaction"] == "INCOME"]
+    assert all(income_allocs["share"] > 0)
+
+
+def test_allocations_sheet_has_type_transaction(
+    transport_income_registry, tmp_path
+):
+    processor = Processor()
+    processor.process(["reg-007"], str(tmp_path), transport=transport_income_registry)
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    alloc_df = pd.read_excel(saved_file, sheet_name="allocations", index_col=0)
+
+    assert "type_transaction" in alloc_df.columns
+    assert "INCOME" in alloc_df["type_transaction"].values
+    assert "NORMAL" in alloc_df["type_transaction"].values
+
+
+# --- Tests for issue #39: missing parsed fields ---
+
+
+def test_entries_sheet_has_created_status_type_columns(
+    transport_single_success, tmp_path
+):
+    processor = Processor()
+    processor.process(["reg-001"], str(tmp_path), transport=transport_single_success)
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    entries_df = pd.read_excel(saved_file, sheet_name="entries", index_col=0)
+
+    assert "created" in entries_df.columns
+    assert "status" in entries_df.columns
+    assert "type" in entries_df.columns
+
+    assert entries_df.iloc[0]["status"] == "ACTIVE"
+    assert entries_df.iloc[0]["type"] == "MANUAL"
+
+
+def test_allocations_sheet_has_split_type_and_share_ratio(
+    transport_single_success, tmp_path
+):
+    processor = Processor()
+    processor.process(["reg-001"], str(tmp_path), transport=transport_single_success)
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    alloc_df = pd.read_excel(saved_file, sheet_name="allocations", index_col=0)
+
+    assert "split_type" in alloc_df.columns
+    assert "share_ratio" in alloc_df.columns
+
+    assert all(alloc_df["split_type"] == "RATIO")
+    assert all(alloc_df["share_ratio"] == 1)
+
+
+def test_unequal_split_preserves_share_ratio(
+    transport_unequal_registries, tmp_path
+):
+    processor = Processor()
+    processor.process(
+        ["reg-003"], str(tmp_path), transport=transport_unequal_registries
+    )
+
+    saved_file = list(tmp_path.glob("*.xlsx"))[0]
+    alloc_df = pd.read_excel(saved_file, sheet_name="allocations", index_col=0)
+
+    assert "split_type" in alloc_df.columns
+    assert "share_ratio" in alloc_df.columns
+
+
+# --- Tests for issue #40: pagination warning ---
+
+
+@pytest.fixture
+def paginated_registry_data(basic_registry_data):
+    data = basic_registry_data.copy()
+    data["Pagination"] = {
+        "future_url": None,
+        "newer_url": None,
+        "older_url": "/v1/user/123/registry?older_id=1000",
+    }
+    return data
+
+
+@pytest.fixture
+def transport_paginated(auth_response, paginated_registry_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=paginated_registry_data)
+
+    return httpx.MockTransport(handler)
+
+
+def test_pagination_warning_printed_when_has_more(
+    transport_paginated, tmp_path, capsys
+):
+    processor = Processor()
+    processor.process(["reg-001"], str(tmp_path), transport=transport_paginated)
+
+    captured = capsys.readouterr()
+    assert "WARNING" in captured.out
+    assert "paginated" in captured.out
+    assert "reg-001" in captured.out
+
+
+def test_no_pagination_warning_when_all_null(
+    transport_single_success, tmp_path, capsys
+):
+    processor = Processor()
+    processor.process(["reg-001"], str(tmp_path), transport=transport_single_success)
+
+    captured = capsys.readouterr()
+    assert "WARNING" not in captured.out
+    assert "paginated" not in captured.out

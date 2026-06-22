@@ -34,8 +34,10 @@ class Allocation:
     def to_dict(self) -> dict:
         return {
             "participant": self.member_name,
-            "share": abs(self.amount.value),
+            "share": self.amount.value,
             "currency": self.amount.currency,
-            "original_share": abs(self.amount_local.value),
+            "original_share": self.amount_local.value,
             "original_currency": self.amount_local.currency,
+            "split_type": self.type.value,
+            "share_ratio": self.share_ratio,
         }
