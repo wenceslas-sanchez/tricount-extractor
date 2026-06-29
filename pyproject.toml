@@ -20,7 +20,7 @@ tricount-extractor = "tricount_extractor.main:main"
 [dependency-groups]
 lint = [
     "pre-commit==4.6.0",
-    "ruff==0.15.18",
+    "ruff==0.15.20",
 ]
 dev = [
     "pytest==9.1.1",
