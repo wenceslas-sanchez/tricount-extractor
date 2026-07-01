@@ -14,3 +14,7 @@ class Pagination:
             newer_url=data.get("newer_url"),
             older_url=data.get("older_url"),
         )
+
+    @property
+    def has_more(self) -> bool:
+        return any([self.future_url, self.newer_url, self.older_url])
