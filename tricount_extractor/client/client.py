@@ -1,5 +1,9 @@
+import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
+from functools import wraps
+from typing import ParamSpec, TypeVar
 
 import httpx
 
@@ -9,7 +13,29 @@ BASE_URL = "https://api.tricount.bunq.com"
 ACCESS_TOKEN_URL = f"{BASE_URL}/v1/session-registry-installation"
 USER_URL = f"{BASE_URL}/v1/user"
 USER_AGENT = "com.bunq.tricount.android:RELEASE:7.0.7:3174:ANDROID:13:C"
-MAX_RETRY = 3
+MAX_RETRY = 10
+BACKOFF_BASE_SECONDS = 1.0
+DEFAULT_TIMEOUT = httpx.Timeout(connect=5.0, read=30.0, write=10.0, pool=5.0)
+RETRYABLE_EXCEPTIONS = (httpx.TimeoutException, httpx.TransportError)
+
+P = ParamSpec("P")
+R = TypeVar("R")
+
+
+def retry_on_network_error(method: Callable[P, R]) -> Callable[P, R]:
+    @wraps(method)
+    def wrapper(self, *args: P.args, **kwargs: P.kwargs) -> R:
+        for attempt in range(self._max_retry):
+            try:
+                return method(self, *args, **kwargs)
+            except RETRYABLE_EXCEPTIONS as exc:
+                if attempt + 1 >= self._max_retry:
+                    msg = f"max retry {self._max_retry} reached: {exc!r}"
+                    raise ConnectionError(msg) from exc
+                time.sleep(BACKOFF_BASE_SECONDS * 2**attempt)
+        raise AssertionError("unreachable")
+
+    return wrapper
 
 
 class TricountClient:
@@ -27,28 +53,16 @@ class TricountClient:
         self._access_token: AccessToken | None = None
 
     def __enter__(self):
-        self._retry_authenticate()
+        self._authenticate()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._access_token = None
         return None
 
+    @retry_on_network_error
     def get_registry(self, registry_id: str) -> httpx.Response:
-        return self._retry_get_registry(registry_id)
-
-    def _retry_get_registry(self, registry_id: str, retry: int = 0) -> httpx.Response:
-        if retry >= self._max_retry:
-            msg = f"max retry {self._max_retry} reached"
-            raise ConnectionError(msg)
-        try:
-            return self._get_registry(registry_id)
-        except httpx.TimeoutException:
-            retry += 1
-            return self._retry_get_registry(registry_id, retry=retry)
-
-    def _get_registry(self, registry_id: str) -> httpx.Response:
-        with httpx.Client(transport=self._transport) as client:
+        with httpx.Client(transport=self._transport, timeout=DEFAULT_TIMEOUT) as client:
             response = client.get(
                 self._registry_url,
                 params=self._registry_params(registry_id),
@@ -68,18 +82,9 @@ class TricountClient:
     def _registry_params(registry_id: str) -> dict[str, str]:
         return {"public_identifier_token": registry_id}
 
-    def _retry_authenticate(self, retry: int = 0) -> None:
-        if retry >= self._max_retry:
-            msg = f"max retry {self._max_retry} reached"
-            raise ConnectionError(msg)
-        try:
-            self._authenticate()
-        except httpx.TimeoutException:
-            retry += 1
-            self._retry_authenticate(retry=retry)
-
+    @retry_on_network_error
     def _authenticate(self) -> None:
-        with httpx.Client(transport=self._transport) as client:
+        with httpx.Client(transport=self._transport, timeout=DEFAULT_TIMEOUT) as client:
             response = client.post(
                 ACCESS_TOKEN_URL,
                 json=self._generate_access_token_payload(),
