@@ -61,6 +61,19 @@ class Entry:
     def is_reimbursement(self) -> bool:
         return self.type_transaction is EntryTypeTransaction.BALANCE
 
+    @property
+    def is_income(self) -> bool:
+        return self.type_transaction is EntryTypeTransaction.INCOME
+
+    @property
+    def transaction_type_label(self) -> str:
+        if self.is_reimbursement:
+            return "Transfer"
+        elif self.is_income:
+            return "Income"
+        else:
+            return "Expense"
+
     def to_dict(self) -> dict:
         return {
             "entry_id": self.id,
@@ -72,6 +85,7 @@ class Entry:
             "original_currency": self.amount_local.currency,
             "payer": self.payer_name,
             "is_reimbursement": self.is_reimbursement,
+            "is_income": self.is_income,
             "category": self.category,
         }
 
@@ -85,6 +99,7 @@ class Entry:
             "description": self.description,
             "payer": self.payer_name,
             "is_reimbursement": self.is_reimbursement,
+            "is_income": self.is_income,
         }
         return [{**base, **a.to_dict()} for a in self.allocations]
 
