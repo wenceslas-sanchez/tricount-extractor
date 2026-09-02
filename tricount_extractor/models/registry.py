@@ -48,6 +48,7 @@ class Registry:
             "allocations": self._to_allocations_dataframe(),
             "attachments": self._to_attachments_dataframe(),
             "balances": self._to_balance_dataframe(),
+            "split_view": self._to_split_view_dataframe(),
         }
 
     def _to_entries_dataframe(self) -> pd.DataFrame:
@@ -61,9 +62,9 @@ class Registry:
     def _to_balance_dataframe(self) -> pd.DataFrame:
         balances = {m.display_name: 0.0 for m in self.members}
         for e in self.entries:
-            balances[e.payer_name] += abs(e.amount.value)
+            balances[e.payer_name] += e.amount.value
             for a in e.allocations:
-                balances[a.member_name] -= abs(a.amount.value)
+                balances[a.member_name] -= a.amount.value
         rows = [{"member": k, "balance": round(v, 2)} for k, v in balances.items()]
         return (
             pd.DataFrame(rows)
@@ -79,3 +80,31 @@ class Registry:
         if not rows:
             return pd.DataFrame(columns=["entry_id", "url"])
         return pd.DataFrame(rows)
+
+    def _to_split_view_dataframe(self) -> pd.DataFrame:
+        member_names = sorted([m.display_name for m in self.members])
+        rows = []
+
+        for e in self.entries:
+            row = {
+                "Date": e.date.strftime("%Y-%m-%d"),
+                "Description": e.description,
+                "Category": e.category,
+                "Type": e.transaction_type_label,
+                "Cost": e.amount.value if not e.is_reimbursement else 0.0,
+                "Currency": e.amount.currency,
+            }
+
+            allocation_map = {a.member_name: a.amount.value for a in e.allocations}
+            for member_name in member_names:
+                amount_owed = allocation_map.get(member_name, 0.0)
+                amount_paid = e.amount.value if member_name == e.payer_name else 0.0
+                row[member_name] = amount_owed - amount_paid
+
+            rows.append(row)
+
+        if not rows:
+            columns = ["Date", "Description", "Category", "Type", "Cost", "Currency"] + member_names
+            return pd.DataFrame(columns=columns)
+
+        return pd.DataFrame(rows).sort_values("Date").reset_index(drop=True)

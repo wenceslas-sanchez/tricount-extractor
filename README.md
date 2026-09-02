@@ -28,7 +28,7 @@ uv run tricount-extractor -id abc123 xyz789 -f ./output
 
 ## Output Format
 
-Each registry is saved as an Excel file with 5 sheets:
+Each registry is saved as an Excel file with 6 sheets:
 
 ### 1. members
 Registry participants with their details.
@@ -87,6 +87,19 @@ Final balance for each member (who owes/is owed).
 |--------|-------------|
 | member | Member name |
 | balance | Net balance (positive = owed, negative = owes) |
+
+### 6. split_view
+Detailed view of each transaction showing each member's net position per entry.
+
+| Column | Description |
+|--------|-------------|
+| Date | Entry date |
+| Description | Expense description |
+| Category | Expense category |
+| Type | Transaction type label |
+| Cost | Total cost (0 for reimbursements) |
+| Currency | Currency code |
+| [Member names] | Each member has a column showing their net balance for this entry (amount owed minus amount paid) |
 
 ## Development
 
