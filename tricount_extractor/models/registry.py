@@ -104,7 +104,14 @@ class Registry:
             rows.append(row)
 
         if not rows:
-            columns = ["date", "description", "category", "type", "cost", "currency"] + member_names
+            columns = [
+                "date",
+                "description",
+                "category",
+                "type",
+                "cost",
+                "currency",
+            ] + member_names
             return pd.DataFrame(columns=columns)
 
         df = pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
