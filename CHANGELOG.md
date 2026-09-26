@@ -1,0 +1,34 @@
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.2.0] - 2026-09-26
+
+### Added
+
+- New `transaction_ledger` sheet: one row per entry with its date, description,
+  category, type (`Expense`, `Income` or `Transfer`), cost and currency, plus one
+  column per member holding their net position for that entry (positive = owed).
+  Each member column sums to their value on the `balances` sheet. ([#73])
+- New `is_income` column on the `entries` and `allocations` sheets. ([#72])
+
+### Fixed
+
+- Balances are now correct for registries containing income entries. Amounts
+  used to be taken as absolute values, which treated money received by the group
+  like an expense. The sign convention is unchanged (positive = owed, negative =
+  owes), but **exports of registries with income will show different balances
+  than with 0.1.0**. ([#71])
+
+## [0.1.0]
+
+- Initial version: export Tricount registries to Excel with `members`, `entries`,
+  `allocations`, `attachments` and `balances` sheets.
+
+[0.2.0]: https://github.com/wenceslas-sanchez/tricount-extractor/releases/tag/v0.2.0
+[#71]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/71
+[#72]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/72
+[#73]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/73
