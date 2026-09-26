@@ -65,6 +65,15 @@ class Entry:
     def is_income(self) -> bool:
         return self.type_transaction is EntryTypeTransaction.INCOME
 
+    @property
+    def transaction_type_label(self) -> str:
+        if self.is_reimbursement:
+            return "Transfer"
+        elif self.is_income:
+            return "Income"
+        else:
+            return "Expense"
+
     def to_dict(self) -> dict:
         return {
             "entry_id": self.id,

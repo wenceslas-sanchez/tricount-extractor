@@ -48,6 +48,7 @@ class Registry:
             "allocations": self._to_allocations_dataframe(),
             "attachments": self._to_attachments_dataframe(),
             "balances": self._to_balance_dataframe(),
+            "transaction_ledger": self._to_transaction_ledger_dataframe(),
         }
 
     def _to_entries_dataframe(self) -> pd.DataFrame:
@@ -79,3 +80,33 @@ class Registry:
         if not rows:
             return pd.DataFrame(columns=["entry_id", "url"])
         return pd.DataFrame(rows)
+
+    def _to_transaction_ledger_dataframe(self) -> pd.DataFrame:
+        member_names = sorted([m.display_name for m in self.members])
+        rows = []
+
+        for e in self.entries:
+            row = {
+                "date": e.date,
+                "description": e.description,
+                "category": e.category,
+                "type": e.transaction_type_label,
+                "cost": e.amount.value if not e.is_reimbursement else 0.0,
+                "currency": e.amount.currency,
+            }
+
+            allocation_map = {a.member_name: a.amount.value for a in e.allocations}
+            for member_name in member_names:
+                amount_owed = allocation_map.get(member_name, 0.0)
+                amount_paid = e.amount.value if member_name == e.payer_name else 0.0
+                row[member_name] = amount_owed - amount_paid
+
+            rows.append(row)
+
+        if not rows:
+            columns = ["date", "description", "category", "type", "cost", "currency"] + member_names
+            return pd.DataFrame(columns=columns)
+
+        df = pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
+        df["date"] = df["date"].dt.strftime("%Y-%m-%d")
+        return df
