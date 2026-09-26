@@ -54,6 +54,7 @@ All expense entries in the registry.
 | original_currency | Original currency code if different from registry currency |
 | payer | Name of person who paid |
 | is_reimbursement | True if this is a reimbursement |
+| is_income | True if this is an income (money received by the group) |
 | category | Expense category (FOOD, ACCOMMODATION, etc.) |
 
 ### 3. allocations
@@ -66,6 +67,7 @@ How each expense is split among participants.
 | description | Expense description |
 | payer | Name of person who paid |
 | is_reimbursement | True if this is a reimbursement |
+| is_income | True if this is an income (money received by the group) |
 | participant | Name of person this allocation applies to |
 | share | Amount allocated to this participant |
 | currency | Currency code |
