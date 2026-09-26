@@ -61,9 +61,9 @@ class Registry:
     def _to_balance_dataframe(self) -> pd.DataFrame:
         balances = {m.display_name: 0.0 for m in self.members}
         for e in self.entries:
-            balances[e.payer_name] += e.amount.value
+            balances[e.payer_name] -= e.amount.value
             for a in e.allocations:
-                balances[a.member_name] -= a.amount.value
+                balances[a.member_name] += a.amount.value
         rows = [{"member": k, "balance": round(v, 2)} for k, v in balances.items()]
         return (
             pd.DataFrame(rows)
