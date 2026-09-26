@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from tricount_extractor.models.amount import Amount
 import enum

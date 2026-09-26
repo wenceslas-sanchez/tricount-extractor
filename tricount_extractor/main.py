@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import httpx
 
 from tricount_extractor.parse_args import parse_args
