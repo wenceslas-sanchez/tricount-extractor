@@ -413,3 +413,36 @@ def test_foreign_currency_shows_original_amount(
     compare_excel_files(
         generated_file, reference_excel_dir / "foreign_currency_trip_6.xlsx"
     )
+
+
+@pytest.fixture
+def duplicate_member_names_data(
+    responses_dir: Annotated[pathlib.Path, pytest.fixture],
+) -> dict:
+    with open(responses_dir / "registry_with_duplicate_member_names.json") as f:
+        return json.load(f)
+
+
+@pytest.fixture
+def transport_duplicate_member_names(auth_response, duplicate_member_names_data):
+    def handler(request):
+        if "session-registry-installation" in str(request.url):
+            return auth_response
+        return httpx.Response(200, json=duplicate_member_names_data)
+
+    return httpx.MockTransport(handler)
+
+
+def test_process_duplicate_member_names_successfully(
+    transport_duplicate_member_names, tmp_path, reference_excel_dir
+):
+    processor = Processor()
+    processor.process(
+        ["reg-009"], str(tmp_path), transport=transport_duplicate_member_names
+    )
+
+    saved_files = list(tmp_path.glob("*.xlsx"))
+    assert len(saved_files) == 1
+
+    generated_file = saved_files[0]
+    compare_excel_files(generated_file, reference_excel_dir / "duplicate_names_9.xlsx")
