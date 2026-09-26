@@ -1,3 +1,4 @@
+from collections import Counter
 from dataclasses import dataclass
 import datetime
 import pandas as pd
@@ -5,6 +6,9 @@ import json
 from tricount_extractor.models.member import Member
 from tricount_extractor.models.entry import Entry
 from tricount_extractor.models.pagination import Pagination
+
+
+LEDGER_COLUMNS = ["date", "description", "category", "type", "cost", "currency"]
 
 
 @dataclass
@@ -60,12 +64,14 @@ class Registry:
         return pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
 
     def _to_balance_dataframe(self) -> pd.DataFrame:
-        balances = {m.display_name: 0.0 for m in self.members}
+        balances = {m.uuid: 0.0 for m in self.members}
         for e in self.entries:
-            balances[e.payer_name] -= e.amount.value
-            for a in e.allocations:
-                balances[a.member_name] += a.amount.value
-        rows = [{"member": k, "balance": round(v, 2)} for k, v in balances.items()]
+            for member_uuid, position in e.net_positions().items():
+                balances[member_uuid] += position
+        labels = self._member_labels()
+        rows = [
+            {"member": labels[k], "balance": round(v, 2)} for k, v in balances.items()
+        ]
         return (
             pd.DataFrame(rows)
             .sort_values("balance", ascending=False)
@@ -82,7 +88,8 @@ class Registry:
         return pd.DataFrame(rows)
 
     def _to_transaction_ledger_dataframe(self) -> pd.DataFrame:
-        member_names = sorted([m.display_name for m in self.members])
+        labels = self._member_labels()
+        members = sorted(labels.items(), key=lambda item: item[1])
         rows = []
 
         for e in self.entries:
@@ -94,24 +101,23 @@ class Registry:
                 "cost": 0.0 if e.is_reimbursement else abs(e.amount.value),
                 "currency": e.amount.currency,
             }
-
-            allocation_map = {a.member_name: a.amount.value for a in e.allocations}
-            for member_name in member_names:
-                amount_owed = allocation_map.get(member_name, 0.0)
-                amount_paid = e.amount.value if member_name == e.payer_name else 0.0
-                row[member_name] = amount_owed - amount_paid
-
+            positions = e.net_positions()
+            for member_uuid, label in members:
+                row[label] = positions.get(member_uuid, 0.0)
             rows.append(row)
 
         if not rows:
-            columns = [
-                "date",
-                "description",
-                "category",
-                "type",
-                "cost",
-                "currency",
-            ] + member_names
+            columns = LEDGER_COLUMNS + [label for _, label in members]
             return pd.DataFrame(columns=columns)
 
         return pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
+
+    def _member_labels(self) -> dict[str, str]:
+        """Column label per member uuid; ambiguous display names get the member id."""
+        names = Counter(m.display_name for m in self.members)
+        return {
+            m.uuid: m.display_name
+            if names[m.display_name] == 1 and m.display_name not in LEDGER_COLUMNS
+            else f"{m.display_name} (#{m.id})"
+            for m in self.members
+        }

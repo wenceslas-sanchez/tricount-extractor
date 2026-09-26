@@ -74,6 +74,14 @@ class Entry:
         else:
             return "Expense"
 
+    def net_positions(self) -> dict[str, float]:
+        """Net position of each involved member, keyed by member uuid (positive = owed)."""
+        positions = {a.member_uuid: a.amount.value for a in self.allocations}
+        positions[self.payer_uuid] = (
+            positions.get(self.payer_uuid, 0.0) - self.amount.value
+        )
+        return positions
+
     def to_dict(self) -> dict:
         return {
             "entry_id": self.id,
