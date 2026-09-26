@@ -2,7 +2,19 @@
 
 Extract and save Tricount registries to Excel files.
 
-## Setup
+## Installation
+
+```bash
+pip install tricount-extractor
+```
+
+Or run it without installing, using [uv](https://docs.astral.sh/uv/):
+
+```bash
+uvx tricount-extractor -id <registry-id> -f <output-folder>
+```
+
+## Development setup
 
 Install dependencies using uv:
 
