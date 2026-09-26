@@ -91,7 +91,7 @@ class Registry:
                 "description": e.description,
                 "category": e.category,
                 "type": e.transaction_type_label,
-                "cost": e.amount.value if not e.is_reimbursement else 0.0,
+                "cost": 0.0 if e.is_reimbursement else abs(e.amount.value),
                 "currency": e.amount.currency,
             }
 
@@ -114,6 +114,4 @@ class Registry:
             ] + member_names
             return pd.DataFrame(columns=columns)
 
-        df = pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
-        df["date"] = df["date"].dt.strftime("%Y-%m-%d")
-        return df
+        return pd.DataFrame(rows).sort_values("date").reset_index(drop=True)
