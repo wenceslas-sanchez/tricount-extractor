@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   like an expense. The sign convention is unchanged (positive = owed, negative =
   owes), but **exports of registries with income will show different balances
   than with 0.1.0**. ([#71])
+- Members sharing a display name are no longer merged on the `balances` sheet.
+  Members are now tracked by id; when a display name is shared, or matches a
+  `transaction_ledger` column name, the member id is appended to the label,
+  e.g. `Alex (#301)`. ([#76])
 
 ## [0.1.0]
 
@@ -32,3 +36,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#71]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/71
 [#72]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/72
 [#73]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/73
+[#76]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/76
