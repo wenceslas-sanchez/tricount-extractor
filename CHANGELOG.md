@@ -5,14 +5,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2026-10-07
 
 ### Changed
 
 - Tests now run on Linux, Windows and macOS. ([#84])
 - `cost` on the `transaction_ledger` sheet is now signed: positive for expenses,
   negative for income (still 0 for reimbursements), so summing it gives the total
-  spent net of income. It used to be an absolute value. ([#83])
+  spent net of income. It used to be an absolute value, so **the `cost` column of existing
+  `transaction_ledger` exports changes sign for income**. ([#83])
 
 ## [0.2.1] - 2026-09-26
 
@@ -50,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version: export Tricount registries to Excel with `members`, `entries`,
   `allocations`, `attachments` and `balances` sheets.
 
+[0.3.0]: https://github.com/wenceslas-sanchez/tricount-extractor/releases/tag/v0.3.0
 [0.2.1]: https://github.com/wenceslas-sanchez/tricount-extractor/releases/tag/v0.2.1
 [0.2.0]: https://github.com/wenceslas-sanchez/tricount-extractor/releases/tag/v0.2.0
 [#71]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/71

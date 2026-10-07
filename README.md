@@ -2,6 +2,8 @@
 
 Extract and save Tricount registries to Excel files.
 
+Available on PyPI: <https://pypi.org/project/tricount-extractor/>
+
 ## Installation
 
 ```bash
