@@ -100,7 +100,7 @@ class Registry:
                 "description": e.description,
                 "category": e.category,
                 "type": e.transaction_type_label,
-                "cost": 0.0 if e.is_reimbursement else abs(e.amount.value),
+                "cost": 0.0 if e.is_reimbursement else -e.amount.value,
                 "currency": e.amount.currency,
             }
             positions = e.net_positions()
