@@ -5,6 +5,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Tests now run on Linux, Windows and macOS. ([#84])
+
 ## [0.2.1] - 2026-09-26
 
 ### Added
@@ -48,3 +54,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#73]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/73
 [#76]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/76
 [#79]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/79
+[#84]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/84
