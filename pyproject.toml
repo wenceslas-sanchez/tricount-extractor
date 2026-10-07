@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "tricount-extractor"
-version = "0.2.1"
+version = "0.3.0"
 description = "Extract and save Tricount registries to Excel files"
 readme = "README.md"
 license = "GPL-3.0-or-later"
