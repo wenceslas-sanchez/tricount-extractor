@@ -111,7 +111,7 @@ Detailed view of each transaction showing each member's net position per entry a
 | description | Expense description |
 | category | Expense category |
 | type | Transaction type label |
-| cost | Total cost (0 for reimbursements) |
+| cost | Signed cost: positive for expenses, negative for income (0 for reimbursements) |
 | currency | Currency code |
 | [Member names] | Each member has a column showing their net balance for this entry (amount owed minus amount paid) |
 
