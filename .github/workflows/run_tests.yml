@@ -8,11 +8,12 @@ on:
 
 jobs:
   pytest:
-    name: pytest (${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    name: pytest (${{ matrix.os }}, ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
         python-version: [ "3.12", "3.13", "3.14" ]
 
     steps:
@@ -39,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check all Python versions passed
+      - name: Check all OS and Python versions passed
         run: |
           if [ "${{ needs.pytest.result }}" != "success" ]; then
             echo "pytest matrix result: ${{ needs.pytest.result }}"
