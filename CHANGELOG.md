@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Tests now run on Linux, Windows and macOS. ([#84])
 - `cost` on the `transaction_ledger` sheet is now signed: positive for expenses,
   negative for income (still 0 for reimbursements), so summing it gives the total
   spent net of income. It used to be an absolute value. ([#83])
@@ -57,3 +58,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#76]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/76
 [#79]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/79
 [#83]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/83
+[#84]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/84
