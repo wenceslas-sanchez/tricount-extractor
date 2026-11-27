@@ -14,7 +14,7 @@ from tricount_extractor.client.keys import generate_public_rsa_key
 BASE_URL = "https://api.tricount.bunq.com"
 ACCESS_TOKEN_URL = f"{BASE_URL}/v1/session-registry-installation"
 USER_URL = f"{BASE_URL}/v1/user"
-USER_AGENT = "com.bunq.tricount.android:RELEASE:7.0.7:3174:ANDROID:13:C"
+USER_AGENT = "com.bunq.tricount.android:RELEASE:14.3.0:4160:ANDROID:13:C"
 MAX_RETRY = 10
 BACKOFF_BASE_SECONDS = 1.0
 DEFAULT_TIMEOUT = httpx.Timeout(connect=5.0, read=30.0, write=10.0, pool=5.0)

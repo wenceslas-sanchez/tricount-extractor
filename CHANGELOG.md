@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Authentication failed with `422 Unprocessable Entity` ("Please update your app")
+  because the hardcoded app version in the User-Agent was too old. It is now
+  `14.3.0:4160`. ([#98])
+
 ## [0.3.0] - 2026-10-07
 
 ### Changed
@@ -61,3 +69,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#79]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/79
 [#83]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/83
 [#84]: https://github.com/wenceslas-sanchez/tricount-extractor/pull/84
+[#98]: https://github.com/wenceslas-sanchez/tricount-extractor/issues/98
